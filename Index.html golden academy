@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Academy - Live Video & WhatsApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); color: #f8fafc; min-height: 100vh; overflow-x: hidden; }
+        
+        /* Header */
+        header { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 20px; text-align: center; border-bottom: 2px solid rgba(214, 175, 55, 0.3); position: sticky; top: 0; z-index: 1000; }
+        .logo h1 { color: #d4af37; font-size: 26px; margin-bottom: 12px; font-weight: 700; text-shadow: 0 0 15px rgba(214,175,55,0.3); }
+        nav { display: flex; justify-content: center; gap: 25px; }
+        nav a { color: #94a3b8; text-decoration: none; font-size: 15px; font-weight: 600; padding: 6px 16px; border-radius: 20px; transition: all 0.3s; }
+        nav a:hover { color: #d4af37; background-color: rgba(214, 175, 55, 0.1); }
+        
+        /* Hero */
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)); }
+        .hero h2 { font-size: 32px; font-weight: 700; }
+        .hero h2 span { color: #d4af37; }
+        .hero p { color: #22c55e; font-size: 18px; margin-top: 10px; font-weight: 600; }
+        
+        /* Container */
+        .container { padding: 40px 20px; max-width: 600px; margin: 0 auto; }
+        
+        /* Course Cards */
+        .course-card { 
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(16px); 
+            padding: 35px 25px; 
+            margin-bottom: 35px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); 
+            text-align: center; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            transition: all 0.3s ease-in-out;
+        }
+        .course-card:hover { transform: translateY(-8px); border-color: rgba(214, 175, 55, 0.4); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4); }
+        .course-card i.main-icon { font-size: 50px; color: #d4af37; margin-bottom: 15px; display: inline-block; }
+        .course-card h3 { font-size: 22px; color: #ffffff; margin-bottom: 10px; }
+        .course-card p.desc { color: #94a3b8; font-size: 15px; line-height: 1.6; margin-bottom: 18px; }
+        .price { font-size: 28px; font-weight: 800; color: #22c55e; margin-bottom: 15px; text-shadow: 0 0 10px rgba(34,197,94,0.2); }
+        
+        /* Buttons */
+        .btn-group { display: flex; flex-direction: column; gap: 12px; }
+        .btn-buy, .btn-watch { padding: 15px 25px; text-decoration: none; font-weight: 700; border-radius: 16px; font-size: 15px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        
+        .btn-buy { background: linear-gradient(135deg, #d4af37 0%, #aa841c 100%); color: #0f172a; display: block; }
+        .btn-buy:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(214,175,55,0.3); }
+        
+        .btn-buy i.fa-shopping-cart { color: #0f172a !important; margin-right: 8px; font-size: 16px; }
+        
+        .btn-watch { background: rgba(255, 255, 255, 0.05); color: #ffffff; border: 1px solid rgba(255,255,255,0.1); display: block; }
+        .btn-watch:hover { background: #2563eb; border-color: #2563eb; transform: translateY(-2px); }
+        .btn-watch i { margin-right: 6px; }
+        
+        /* Video Modal */
+        .video-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000; opacity: 0; pointer-events: none;
+            transition: all 0.4s ease;
+        }
+        .video-modal.active { opacity: 1; pointer-events: auto; }
+        .modal-content { width: 90%; max-width: 800px; background: #1e293b; border-radius: 20px; overflow: hidden; border: 1px solid rgba(214, 175, 55, 0.3); position: relative; transform: scale(0.8); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .video-modal.active .modal-content { transform: scale(1); }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .close-btn { position: absolute; top: -45px; right: 0; color: #ffffff; font-size: 30px; cursor: pointer; background: none; border: none; }
+        
+        /* Contacts Section */
+        .contacts-section { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); padding: 40px 25px; margin-top: 40px; text-align: center; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .contacts-section h3 { color: #ffffff; margin-bottom: 20px; font-size: 22px; }
+        .contact-info p { color: #94a3b8; font-size: 16px; margin-bottom: 10px; }
+        .contact-info i { color: #d4af37; margin-right: 10px; }
+        
+        footer { background-color: #090d16; color: #64748b; text-align: center; padding: 30px; margin-top: 60px; font-size: 14px; border-top: 1px solid rgba(214, 175, 55, 0.2); }
+    </style>
+</head>
+<body>
+
+    <header id="home">
+        <div class="logo"><h1><i class="fas fa-graduation-cap"></i> Golden Academy</h1></div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#courses">Koorsooyinka</a>
+            <a href="#contacts">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <!-- Qoraalkii oo hadda sax ah -->
+        <h2>Baro xirfado noloshaada dhisaya.</h2>
+        <p><i class="fas fa-fire"></i> qiimo jaban iyo aqoon tayo leh </p>
+    </section>
+
+    <main class="container" id="courses">
+
+        <!-- 1. Forex Trading ($30) -->
+        <div class="course-card">
+            <i class="fas fa-chart-line main-icon"></i>
+            <h3>Forex Trading Mastery</h3>
+            <p class="desc">Baro falanqaynta suuqyada lacagaha caalamiga ah, fahamka garaafyada iyo maamulka lacagta.</p>
+            <p class="price">$30.00</p>
+            <div class="btn-group">
+                <a href="https://wa.me/252907139258?text=Haye%20Golden%20Academy,%20waxaan%20rabaa%20inaan%20iibsado%20Koorsada%20Forex%20Trading%20oo%20ah%20$30." class="btn-buy" target="_blank"><i class="fas fa-shopping-cart"></i> Iibso (WhatsApp)</a>
+                <button class="btn-watch" onclick="openVideo('https://www.youtube.com/embed/tgbNymZ7vqY')"><i class="fas fa-play-circle"></i> Daawo Casharka 1aad</button>
+            </div>
+        </div>
+
+        <!-- 2. Web Development ($10) -->
+        <div class="course-card">
+            <i class="fas fa-code main-icon"></i>
+            <h3>Web Development</h3>
+            <p class="desc">Baro HTML, CSS, JavaScript iyo sida loo dhiso website-yo casri ah.</p>
+            <p class="price">$10.00</p>
+            <div class="btn-group">
+                <a href="https://wa.me/252907139258?text=Haye%20Golden%20Academy,%20waxaan%20rabaa%20inaan%20iibsado%20Koorsada%20Web%20Dev%20oo%20ah%20$10." class="btn-buy" target="_blank"><i class="fas fa-shopping-cart"></i> Iibso (WhatsApp)</a>
+                <button class="btn-watch" onclick="openVideo('https://www.youtube.com/embed/dQw4w9WgXcQ')"><i class="fas fa-play-circle"></i> Daawo Casharka 1aad</button>
+            </div>
+        </div>
+
+        <!-- 3. Cyber Security ($10) -->
+        <div class="course-card">
+            <i class="fas fa-shield-halved main-icon"></i>
+            <h3>Cyber Security</h3>
+            <p class="desc">Baro badbaadinta xogta iyo difaaca nidaamyada kumbuyuutarka.</p>
+            <p class="price">$10.00</p>
+            <div class="btn-group">
+                <a href="https://wa.me/252907139258?text=Haye%20Golden%20Academy,%20waxaan%20rabaa%20inaan%20iibsado%20Koorsada%20Cyber%20Security%20oo%20ah%20$10." class="btn-buy" target="_blank"><i class="fas fa-shopping-cart"></i> Iibso (WhatsApp)</a>
+                <button class="btn-watch" onclick="openVideo('https://www.youtube.com/embed/dQw4w9WgXcQ')"><i class="fas fa-play-circle"></i> Daawo Casharka 1aad</button>
+            </div>
+        </div>
+
+        <!-- 4. Video Editing ($10) -->
+        <div class="course-card">
+            <i class="fas fa-video main-icon"></i>
+            <h3>Video Editing</h3>
+            <p class="desc">Baro habaynta iyo jar-goynta muqaallada heer sare ah (Premiere Pro).</p>
+            <p class="price">$10.00</p>
+            <div class="btn-group">
+                <a href="https://wa.me/252907139258?text=Haye%20Golden%20Academy,%20waxaan%20rabaa%20inaan%20iibsado%20Koorsada%20Video%20Editing%20oo%20ah%20$10." class="btn-buy" target="_blank"><i class="fas fa-shopping-cart"></i> Iibso (WhatsApp)</a>
+                <button class="btn-watch" onclick="openVideo('https://www.youtube.com/embed/dQw4w9WgXcQ')"><i class="fas fa-play-circle"></i> Daawo Casharka 1aad</button>
+            </div>
+        </div>
+
+        <!-- 5. Graphic Design ($10) -->
+        <div class="course-card">
+            <i class="fas fa-palette main-icon"></i>
+            <h3>Graphic Design</h3>
+            <p class="desc">Baro naqshadaynta astaamaha ganacsiga (logos) iyo boostarrada.</p>
+            <p class="price">$10.00</p>
+            <div class="btn-group">
+                <a href="https://wa.me/252907139258?text=Haye%20Golden%20Academy,%20waxaan%20rabaa%20inaan%20iibsado%20Koorsada%20Graphic%20Design%20oo%20ah%20$10." class="btn-buy" target="_blank"><i class="fas fa-shopping-cart"></i> Iibso (WhatsApp)</a>
+                <button class="btn-watch" onclick="openVideo('https://www.youtube.com/embed/dQw4w9WgXcQ')"><i class="fas fa-play-circle"></i> Daawo Casharka 1aad</button>
+            </div>
+        </div>
+
+        <!-- Contacts Section -->
+        <section class="contacts-section" id="contacts">
+            <h3><i class="fas fa-headset"></i> Nala Soo Xiriir</h3>
+            <div class="contact-info">
+                <p><i class="fas fa-phone"></i> +252 90 713 9258</p>
+                <p><i class="fas fa-envelope"></i> support@goldenacademy.com</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Video Player Modal Layer -->
+    <div class="video-modal" id="videoModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeVideo()"><i class="fas fa-times"></i></button>
+            <div class="video-wrapper">
+                <iframe id="videoPlayer" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('videoModal');
+        const player = document.getElementById('videoPlayer');
+
+        function openVideo(videoUrl) {
+            player.src = videoUrl;
+            modal.classList.add('active');
+        }
+
+        function closeVideo() {
+            modal.classList.remove('active');
+            player.src = "";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeVideo();
+            }
+        }
+    </script>
+
+    <footer>
+        <p>Copyright &copy; 2026 Golden Academy. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
